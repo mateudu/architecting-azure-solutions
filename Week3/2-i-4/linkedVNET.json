@@ -71,10 +71,33 @@
                     "addressPrefixes": [
                         "[parameters('vnetAddressPrefix')]"
                     ]
-                },
-                "subnets": [
+                }
+            }            
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('vnetName'),'-subnets')]",
+            "dependsOn": [
+                "nic1"
+            ],
+            "properties": {
+              "mode": "Incremental",
+              "parameters": {},
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {},
+                "variables": {},
+                "resources": [
                     {
+                        "apiVersion": "2017-06-01",
+                        "type": "subnets",
+                        "location": "[parameters('location')]",
                         "name": "[parameters('subnet1Name')]",
+                        "dependsOn": [
+                            "[parameters('vnetName')]"
+                        ],
                         "properties": {
                             "addressPrefix": "[parameters('subnet1Prefix')]",
                             "networkSecurityGroup": {
@@ -83,7 +106,13 @@
                         }
                     },
                     {
+                        "apiVersion": "2017-06-01",
+                        "type": "subnets",
+                        "location": "[parameters('location')]",
                         "name": "[parameters('subnet2Name')]",
+                        "dependsOn": [
+                            "[parameters('vnetName')]"
+                        ],
                         "properties": {
                             "addressPrefix": "[parameters('subnet2Prefix')]",
                             "networkSecurityGroup": {
@@ -91,8 +120,10 @@
                             }
                         }
                     }
-                ]
-            }
-        }
+                ],
+                "outputs": {}
+                }
+              }
+          }
     ]
 }
