@@ -98,7 +98,10 @@
                         "[parameters('vnetName')]"
                     ],
                     "properties": {
-                        "addressPrefix": "[parameters('subnet2Prefix')]"
+                        "addressPrefix": "[parameters('subnet2Prefix')]",
+                        "networkSecurityGroup": {
+                            "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
+                        }
                     }
                 }
             ]
