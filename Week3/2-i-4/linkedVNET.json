@@ -57,7 +57,7 @@
             "metadata": {
                 "description": "Network Security Group Name"
             }
-        }
+        }        
     },
     "variables": {},
     "resources": [
@@ -72,61 +72,39 @@
                         "[parameters('vnetAddressPrefix')]"
                     ]
                 }
-            }
-        },
-        {
-            "apiVersion": "2015-01-01",
-            "type": "Microsoft.Resources/deployments",
-            "name": "[concat(parameters('vnetName'),'-subnets')]",
-            "dependsOn": [
-                "[parameters('vnetName')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "parameters": {},
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "apiVersion": "2017-06-01",
-                            "name": "[parameters('vnetName')]",
-                            "location": "[parameters('location')]",
-                            "type": "Microsoft.Network/virtualNetworks",
-                            "properties": {
-                                "addressSpace": {
-                                    "addressPrefixes": [
-                                        "[parameters('vnetAddressPrefix')]"
-                                    ]
-                                },
-                                "subnets": [
-                                    {
-                                        "name": "[parameters('subnet1Name')]",
-                                        "properties": {
-                                            "addressPrefix": "[parameters('subnet1Prefix')]",
-                                            "networkSecurityGroup": {
-                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "name": "[parameters('subnet2Name')]",
-                                        "properties": {
-                                            "addressPrefix": "[parameters('subnet2Prefix')]",
-                                            "networkSecurityGroup": {
-                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2017-06-01",
+                    "type": "subnets",
+                    "location": "[parameters('location')]",
+                    "name": "[parameters('subnet1Name')]",
+                    "dependsOn": [
+                        "[parameters('vnetName')]"
                     ],
-                    "outputs": {}
+                    "properties": {
+                        "addressPrefix": "[parameters('subnet1Prefix')]",
+                        "networkSecurityGroup": {
+                            "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2017-06-01",
+                    "type": "subnets",
+                    "location": "[parameters('location')]",
+                    "name": "[parameters('subnet2Name')]",
+                    "dependsOn": [
+                        "[parameters('vnetName')]"
+                    ],
+                    "properties": {
+                        "addressPrefix": "[parameters('subnet2Prefix')]",
+                        "networkSecurityGroup": {
+                            "id": "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
+                        }
+                    }
                 }
-            }
+            ]
         }
     ]
 }
