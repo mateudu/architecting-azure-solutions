@@ -79,7 +79,7 @@
             "type": "Microsoft.Resources/deployments",
             "name": "[concat(parameters('vnetName'),'-subnets')]",
             "dependsOn": [
-                "nic1"
+                "[parameters('vnetName')]"
             ],
             "properties": {
               "mode": "Incremental",
