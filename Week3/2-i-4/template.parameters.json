@@ -1,0 +1,24 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "parameters": {
+        "adminUser": {
+            "value": "testadmin"
+        },
+        "adminPassword": {
+            "value": "Pa$s$ww0oRd123!"
+        },
+        "vmSize": {
+            "value": "Standard_A1"
+        },        
+        "locationCode": {
+            "value": "ne1"
+        },
+        "environmentCode": {
+            "value": "u"
+        },
+        "projectCode": {
+            "value": "infr"
+        }
+    }
+}

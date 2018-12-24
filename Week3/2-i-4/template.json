@@ -62,8 +62,9 @@
   },
   "variables": {
     "vnetDeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'vnt')]",
-    "subnet1DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub1')]",
-    "subnet2DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub2')]",
+    "subnetDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub')]",
+    "subnet1DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub0')]",
+    "subnet2DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub1')]",
     "nsgDeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'nsg')]",
     "vmDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'vma')]",
     "nicDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'nic')]",
@@ -165,13 +166,13 @@
           "suffix": {
             "value": "[concat(copyIndex(1))]"
           },
-          "subnetRef": {
-            "value": "[reference(variables('vnetDeployName')).outputs.subnetsRefs.value[copyIndex()]]"
+          "subnetReference": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('vnetDeployName'), concat(variables('subnetDeployNamePrefix'),copyIndex()))]"
           }          
         }
       },
       "copy": {
-        "name": "vmcopy",
+        "name": "vmCopy",
         "count": 2
       }
     }
