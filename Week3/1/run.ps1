@@ -14,6 +14,12 @@ New-AzureRmPolicyAssignment -Name "ManagedDiskNaming" -PolicyDefinition $policyD
 $policyDefinition = New-AzureRmPolicyDefinition -Name "NetworkInterfaceNaming" -Policy $policyPath -Parameter ".\Policies\Naming\policy.networkinterface.parameters.json"
 New-AzureRmPolicyAssignment -Name "NetworkInterfaceNaming" -PolicyDefinition $policyDefinition -Scope $subscriptionScope
 
+$policyDefinition = New-AzureRmPolicyDefinition -Name "NetworkSecurityGroupNaming" -Policy $policyPath -Parameter ".\Policies\Naming\policy.networksecuritygroup.parameters.json"
+New-AzureRmPolicyAssignment -Name "NetworkSecurityGroupNaming" -PolicyDefinition $policyDefinition -Scope $subscriptionScope
+
+$policyDefinition = New-AzureRmPolicyDefinition -Name "PublicIPNaming" -Policy $policyPath -Parameter ".\Policies\Naming\policy.publicip.parameters.json"
+New-AzureRmPolicyAssignment -Name "PublicIPNaming" -PolicyDefinition $policyDefinition -Scope $subscriptionScope
+
 $policyDefinition = New-AzureRmPolicyDefinition -Name "StorageAccountNaming" -Policy $policyPath -Parameter ".\Policies\Naming\policy.storageaccount.parameters.json"
 New-AzureRmPolicyAssignment -Name "StorageAccountNaming" -PolicyDefinition $policyDefinition -Scope $subscriptionScope
 

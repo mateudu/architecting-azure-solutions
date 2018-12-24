@@ -1,0 +1,10 @@
+{
+    "resourceType": {
+        "type": "string",
+        "defaultValue": "Microsoft.Network/networkSecurityGroups"
+    },
+    "resourceCode": {
+        "type": "string",
+        "defaultValue": "nsg"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "resourceType": {
+        "type": "string",
+        "defaultValue": "Microsoft.Network/publicIPAddresses"
+    },
+    "resourceCode": {
+        "type": "string",
+        "defaultValue": "pip"
+    }
+}
