@@ -1,0 +1,10 @@
+{
+    "resourceType": {
+        "type": "string",
+        "defaultValue": "Microsoft.Compute/disks"
+    },
+    "resourceCode": {
+        "type": "string",
+        "defaultValue": "vhd"
+    }
+}

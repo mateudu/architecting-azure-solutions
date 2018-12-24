@@ -1,0 +1,10 @@
+{
+    "resourceType": {
+        "type": "string",
+        "defaultValue": "Microsoft.Storage/storageAccounts"
+    },
+    "resourceCode": {
+        "type": "string",
+        "defaultValue": "sta"
+    }
+}

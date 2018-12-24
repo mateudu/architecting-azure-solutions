@@ -1,0 +1,10 @@
+{
+    "resourceType": {
+        "type": "string",
+        "defaultValue": "Microsoft.Compute/virtualMachines"
+    },
+    "resourceCode": {
+        "type": "string",
+        "defaultValue": "vma"
+    }
+}

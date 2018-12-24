@@ -1,0 +1,39 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "[parameters('resourceType')]"
+            },
+            {
+                "not": {
+                    "anyOf": [
+                        {
+                            "field": "name",
+                            "match": "[concat('?.......',parameters('resourceCode'))]"
+                        },
+                        {
+                            "field": "name",
+                            "match": "[concat('?.......',parameters('resourceCode'),'.')]"
+                        },
+                        {
+                            "field": "name",
+                            "match": "[concat('?.......',parameters('resourceCode'),'..')]"
+                        },
+                        {
+                            "field": "name",
+                            "match": "[concat('?.......',parameters('resourceCode'),'...')]"
+                        },
+                        {
+                            "field": "name",
+                            "match": "[concat('?.......',parameters('resourceCode'),'....')]"
+                        }
+                    ]
+                }                
+            }
+        ]
+    },
+    "then": {
+        "effect": "deny"
+    }
+}

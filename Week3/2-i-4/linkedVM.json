@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminUser": {
+        "type": "string"
+      },
+      "adminPassword": {
+        "type": "securestring"
+      },
+      "vmSize": {
+        "type": "string"
+      },
+      "vmNamePrefix": {
+        "type": "string"
+      },
+      "nicNamePrefix": {
+        "type": "string"
+      },
+      "pipNamePrefix": {
+        "type": "string"
+      },
+      "vhdNamePrefix": {
+        "type": "string"
+      },
+      "suffix": {
+        "type": "string"
+      },
+      "subnetReference": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "vmName": "[concat(parameters('vmNamePrefix'), parameters('suffix'))]",
+      "nicName": "[concat(parameters('nicNamePrefix'), parameters('suffix'))]",
+      "adminUsername": "[parameters('adminUser')]",
+      "publicIpAddressName": "[concat(parameters('pipNamePrefix'), parameters('suffix'))]",
+      "osDiscName": "[concat(parameters('vhdNamePrefix'), parameters('suffix'))]",
+      "adminPassword": "[parameters('adminPassword')]"
+    },
+    "resources": [
+      {
+        "apiVersion": "2018-06-01",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIpAddressName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "[variables('vmName')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2018-06-01",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nicName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "[concat('ipconfig', parameters('suffix'))]",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"
+                },
+                "subnet": {
+                  "id": "[parameters('subnetReference')]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2018-06-01",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('vmName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[variables('vmName')]",
+            "adminUsername": "[variables('adminUsername')]",
+            "adminPassword": "[variables('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "18.04-LTS",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage",
+              "name": "[variables('osDiscName')]"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "outputs": {}
+  }
+  
