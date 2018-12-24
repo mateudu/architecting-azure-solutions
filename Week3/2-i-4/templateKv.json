@@ -1,0 +1,195 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "keyVaultResourceGroup": {
+      "type": "string"
+    },
+    "adminUserNameSecretName": {
+      "type": "string",
+      "defaultValue": "VM-ADMIN-USERNAME"
+    },
+    "adminUserPasswordSecretName": {
+      "type": "string",
+      "defaultValue": "VM-ADMIN-PASSWORD"
+    },
+    "vmSize": {
+        "type": "string"
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/16",
+      "metadata": {
+        "description": "Vnet address."
+      }
+    },
+    "subnet1Prefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/24",
+      "metadata": {
+        "description": "Subnet1 address."
+      }
+    },
+    "subnet2Prefix": {
+      "type": "string",
+      "defaultValue": "10.0.1.0/24",
+      "metadata": {
+        "description": "Subnet2 address."
+      }
+    },
+    "locationCode": {
+        "type": "string",
+        "defaultValue": "we1",
+        "metadata": {
+            "description": "Code of naming convention location."
+        }
+    },    
+    "environmentCode": {
+        "type": "string",
+        "defaultValue": "d",
+        "metadata": {
+            "description": "Environment type (DEV (d),UAT (u), PROD (p))"
+        }
+    },
+    "projectCode": {
+        "type": "string",
+        "defaultValue": "infr",
+        "metadata": {
+            "description": "Project code."
+        }
+    }
+  },
+  "variables": {
+    "vnetDeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'vnt')]",
+    "subnetDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub')]",
+    "subnet1DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub0')]",
+    "subnet2DeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'sub1')]",
+    "nsgDeployName": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'nsg')]",
+    "vmDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'vma')]",
+    "nicDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'nic')]",
+    "pipDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'pip')]",
+    "vhdDeployNamePrefix": "[concat(parameters('environmentCode'),parameters('projectCode'),parameters('locationCode'),'vhd')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('nsgDeployName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/mateudu/architecting-azure-solutions/master/Week3/2-i-4/linkedNSG.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "nsgName": {
+            "value": "[variables('nsgDeployName')]"
+          }
+        }
+      }
+
+    },
+    {
+      "name": "[variables('vnetDeployName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "dependsOn": [
+        "[variables('nsgDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/mateudu/architecting-azure-solutions/master/Week3/2-i-4/linkedVNET.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vnetName": {
+            "value": "[variables('vnetDeployName')]"
+          },
+          "vnetAddressPrefix": {
+            "value": "[parameters('vnetAddressPrefix')]"
+          },
+          "subnet1Name": {
+            "value": "[variables('subnet1DeployName')]"
+          },
+          "subnet1Prefix": {
+            "value": "[parameters('subnet1Prefix')]"
+          },
+          "subnet2Name": {
+            "value": "[variables('subnet2DeployName')]"
+          },
+          "subnet2Prefix": {
+            "value": "[parameters('subnet2Prefix')]"
+          },
+          "nsgName": {
+            "value": "[variables('nsgDeployName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[concat(variables('vmDeployNamePrefix'), copyIndex(1))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "dependsOn": [
+        "[variables('vnetDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/mateudu/architecting-azure-solutions/master/Week3/2-i-4/linkedVM.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUser": {
+            "reference": {
+              "keyvault": {
+                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+              },
+              "secretName": "[parameters('adminUserNameSecretName')]"
+            }
+          },
+          "adminPassword": {
+            "reference": {
+              "keyvault": {
+                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+              },
+              "secretName": "[parameters('adminUserPasswordSecretName')]"
+            }
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "vmNamePrefix": {
+            "value": "[variables('vmDeployNamePrefix')]"
+          },
+          "nicNamePrefix": {
+            "value": "[variables('nicDeployNamePrefix')]"
+          },
+          "pipNamePrefix": {
+            "value": "[variables('pipDeployNamePrefix')]"
+          },
+          "vhdNamePrefix": {
+            "value": "[variables('vhdDeployNamePrefix')]"
+          },
+          "suffix": {
+            "value": "[concat(copyIndex(1))]"
+          },
+          "subnetReference": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('vnetDeployName'), concat(variables('subnetDeployNamePrefix'),copyIndex()))]"
+          }          
+        }
+      },
+      "copy": {
+        "name": "vmCopy",
+        "count": 2
+      }
+    }
+  ],
+  "outputs": {
+
+  }
+}

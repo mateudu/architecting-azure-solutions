@@ -1,0 +1,15 @@
+{
+    "Name": "CustomVmOperator",
+    "IsCustom": true,
+    "Description": "Can start, restart virtual machines and report support tickets.",
+    "Actions": [
+      "Microsoft.Compute/virtualMachines/read",
+      "Microsoft.Compute/virtualMachines/start/action",
+      "Microsoft.Compute/virtualMachines/restart/action",
+      "Microsoft.Support/supportTickets/write"
+    ],
+    "NotActions": [],
+    "AssignableScopes": [
+      "/subscriptions/c8e05996-9953-4f3d-aae7-66f35f1f42c2"
+    ]
+  }

@@ -1,0 +1,24 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "parameters": {
+        "keyVaultName": {
+            "value": "uinfrwe1kvt"
+        },
+        "keyVaultResourceGroup": {
+            "value": "uinfrwe1rgp"
+        },
+        "vmSize": {
+            "value": "Standard_A1"
+        },        
+        "locationCode": {
+            "value": "we1"
+        },
+        "environmentCode": {
+            "value": "u"
+        },
+        "projectCode": {
+            "value": "infr"
+        }
+    }
+}
