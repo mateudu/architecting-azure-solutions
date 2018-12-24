@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+    "contentVersion": "1.0.0.1",
     "parameters": {
         "vnetName": {
             "type": "string",
@@ -49,13 +49,6 @@
             "defaultValue": "[resourceGroup().location]",
             "metadata": {
                 "description": "Location for all resources."
-            }
-        },
-        "locationCode": {
-            "type": "string",
-            "defaultValue": "we1",
-            "metadata": {
-                "description": "Code of naming convention location."
             }
         },
         "nsgName": {
