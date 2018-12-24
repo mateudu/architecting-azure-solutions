@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.1",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "adminUser": {
       "type": "string",
@@ -74,7 +74,7 @@
     {
       "name": "[variables('nsgDeployName')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-06-01",
+      "apiVersion": "2017-05-10",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -92,7 +92,7 @@
     {
       "name": "[variables('vnetDeployName')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-06-01",
+      "apiVersion": "2017-05-10",
       "dependsOn": [
         "[variables('nsgDeployName')]"
       ],
@@ -130,7 +130,7 @@
     {
       "name": "[concat(variables('vmDeployNamePrefix'), copyIndex(1))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-06-01",
+      "apiVersion": "2017-05-10",
       "dependsOn": [
         "[variables('vnetDeployName')]"
       ],
