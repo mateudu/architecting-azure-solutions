@@ -121,7 +121,7 @@
           "subnet2Prefix": {
             "value": "[parameters('subnet2Prefix')]"
           },
-          "nsgroupName": {
+          "nsgName": {
             "value": "[variables('nsgDeployName')]"
           }
         }
